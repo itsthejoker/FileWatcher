@@ -167,7 +167,7 @@ def rename_duplicate(directory):
 
 
 def process_root_level_movie(movie):
-    renamed_movie = "{} ({})".format(folder_translator(movie)[0], 
+    renamed_movie = "{} ({})".format(folder_translator(movie)[0],
                                      folder_translator(movie)[1])
 
     debug_message("Moving root level file {} into new folder!".format(movie))
@@ -295,33 +295,38 @@ def rename_movie_folder(directory):
     else:
         new_directory = "{} ({})".format(folder_translator(directory)[0],
                                          folder_translator(directory)[1])
-
-        os.rename(os.path.join(settings.incoming_dir, directory), os.path.join(
-                  settings.incoming_dir, new_directory))
-
-        debug_message("Rename successful!")
+        try:
+            os.rename(os.path.join(settings.incoming_dir, directory), os.path.join(
+                      settings.incoming_dir, new_directory))
+            debug_message("Rename successful!")
+        except OSError:
+            debug_message("Access denied while trying to rename {}!".format(
+                          new_directory))
+            return None
 
         return new_directory
 
 
 def move_movie_folder(new_directory):
+    if new_directory is None:
+        debug_message("Something went wrong! Skipping!")
+    else:
+        if not os.path.isdir(os.path.join(settings.movie_dir, new_directory)):
 
-    if not os.path.isdir(os.path.join(settings.movie_dir, new_directory)):
-
-        try:
-            shutil.move(os.path.join(settings.incoming_dir, new_directory),
-                        os.path.join(settings.movie_dir, new_directory))
-            debug_message("Move successful! Folder {} now located at {}".
-                          format(new_directory, settings.movie_dir +
-                                 new_directory))
-        except (OSError, shutil.Error):
+            try:
+                shutil.move(os.path.join(settings.incoming_dir, new_directory),
+                            os.path.join(settings.movie_dir, new_directory))
+                debug_message("Move successful! Folder {} now located at {}".
+                              format(new_directory, settings.movie_dir +
+                                     new_directory))
+            except (OSError, shutil.Error):
+                print("{} is already in the destination directory! Renaming!".
+                      format(new_directory))
+                rename_duplicate(new_directory)
+        else:
             print("{} is already in the destination directory! Renaming!".
                   format(new_directory))
             rename_duplicate(new_directory)
-    else:
-        print("{} is already in the destination directory! Renaming!".format(
-              new_directory))
-        rename_duplicate(new_directory)
 
 
 def is_movie(directory_file):
