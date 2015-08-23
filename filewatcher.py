@@ -26,7 +26,11 @@ import random
 import sys
 import time
 import re
-import ConfigParser as configparser
+
+if sys.version_info.major < 3:
+    import ConfigParser as configparser
+else:
+    import configparser
 
 title_parser = re.compile("""
     (?P<title>[\w,.\-!'\s]+)
@@ -50,7 +54,7 @@ def generate_config():
     config.set('Info', 'application_name', 'FileWatcher')
     config.set('Info', "; Delay between filesystem checks - default is 180 "
                "seconds.")
-    config.set('Info', 'delay_time', 180)
+    config.set('Info', 'delay_time', '180')
     config.set('Info', '; Print the debug information? There\'s a lot, so '
                'don\'t turn')
     config.set('Info', ';     this on unless you really want to.')
@@ -66,9 +70,9 @@ def generate_config():
     config.set('File Information', '; The program assumes that all files under'
                ' a size threshold')
     config.set('File Information', ';     are actually TV shows.')
-    config.set('File Information', 'minimum_movie_size', 650)
+    config.set('File Information', 'minimum_movie_size', '650')
     config.set('File Information', '; For auto-deleting crap promo videos')
-    config.set('File Information', 'minimum_episode_size', 25)
+    config.set('File Information', 'minimum_episode_size', '25')
     # config.set('File Information', '; ')
     # config.set('File Information', '; Minimum number of video files to trigger '
     #            'the TV algorithm')
