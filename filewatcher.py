@@ -18,7 +18,7 @@
 
 from __future__ import print_function
 
-__version__ = 1.0
+__version__ = 1.1
 
 import os
 import shutil
@@ -118,10 +118,14 @@ def folder_translator(foldername, title_parser=title_parser):
     if get_extension(foldername) in settings.video_formats:
         extension = get_extension(foldername)
         foldername = foldername[:-len(extension)].replace(".", " ")
+        foldername = foldername.replace("_", " ")
         foldername = foldername + extension
     else:
         foldername = foldername.replace(".", " ")
-
+        foldername = foldername.replace("_", " ")
+    
+    foldername = foldername.title()
+    
     debug_message("Now {} after replacement!".format(foldername))
     title_data = title_parser.match(foldername)
 
@@ -294,8 +298,12 @@ def rename_movie_folder(directory):
     debug_message("Attempting rename of parent folder!")
 
     if folder_translator(directory) is None:
-        print("{} has an issue I can't recover from. Skipping!")
-        rename_skipped(directory)
+        print("{} has an issue I can't recover from. Skipping!".format(directory))
+        try:
+            rename_skipped(directory)
+        except OSError:
+            debug_message("{} is locked by the OS. Skipping!".format(directory))
+            pass
     else:
         new_directory = "{} ({})".format(folder_translator(directory)[0],
                                          folder_translator(directory)[1])
@@ -348,18 +356,25 @@ def process_movie(directory, dir_files):
                 marked_tv_dir = True
 
     if marked_tv_dir:
-        process_tv_show(directory)
+        try:
+            process_tv_show(directory)
+        except OSError:
+            print("Encountered an issue with {}! Skipping!".format(directory))
 
     else:
         # we know we've got a movie, so it's time to rename and move the folder
         delete_samples(directory, dir_files)
-        new_movie_folder = rename_movie_folder(directory)
-        if type(new_movie_folder) is None:
-            print("Encountered an issue with {}! Skipping!".format(directory))
-        else:
-            move_movie_folder(new_movie_folder)
+        rename_and_move(directory)
 
 
+def rename_and_move(directory):
+    new_movie_folder = rename_movie_folder(directory)
+    if type(new_movie_folder) is None:
+        debug_message("Encountered an issue with {}! Skipping!".format(directory))
+    else:
+        move_movie_folder(new_movie_folder)
+            
+            
 def process_folders(dirs):
     for directory in dirs:
         debug_message("Switching to directory {}".format(directory))
@@ -378,16 +393,24 @@ def process_folders(dirs):
                          incoming_dir, directory)) if
                          os.path.isfile(os.path.join(settings.incoming_dir,
                                         directory, f))]
-            if not in_use(os.path.join(settings.incoming_dir, directory,
-                          dir_files[0])):
-                debug_message("Folder is good to go - time to see if it's a "
-                              "video folder!")
-
-                if is_video_folder(directory, dir_files):
-                    process_movie(directory, dir_files)
-                else:
-                    debug_message("Folder does not appear to be a movie. "
-                                  "Skipping.")
+            try:
+                if not in_use(os.path.join(settings.incoming_dir, directory,
+                              dir_files[0])):
+                    debug_message("Folder is good to go - time to see if "
+                              "it's a video folder!")
+                    if is_video_folder(directory, dir_files):
+                        process_movie(directory, dir_files)
+                    else:
+                        debug_message("Folder does not appear to be a movie."
+                                    "Skipping.")
+            except IndexError:
+                dir_folders = [f for f in os.listdir(os.path.join(settings.
+                               incoming_dir, directory)) if os.path.isdir(
+                               os.path.join(settings.incoming_dir,
+                               directory, f))]
+                
+                if dir_folders[0].lower() is "video_ts":
+                    rename_and_move(directory)
 
             else:
                 debug_message("Folder is in use! Moving to next folder.")
