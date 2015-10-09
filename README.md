@@ -25,3 +25,6 @@ The program will barf if it cannot find a title or a year, but that's why the [S
 
 ### A Note About Deleting
 You can set the program to automatically delete certain types of files from identified movie directories. When you generate the config, it will already have three file types filled in: .txt, .nfo, and .jpg. This is to get rid of a lot of the fluff that commonly finds its way into the media. It will also delete all video files smaller than the minimum episode size that is set, assuming that anything smaller than a TV episode is going to be some kind of "sample.avi" file. We don't need those either, so it's gone. If you want to disable the sample file deletion, just set the minimum episode size to 0.
+
+## Music
+FileWatcher also now does very basic music handling - it looks for audio files in a folder and then moves them to another folder of your choosing. At this point, it does not do any renaming or attempt to sort; it will only move to another directory, where you can presumably run through another program to sort. (I'm using MusicBrainz Picard, and it's working pretty well!)
