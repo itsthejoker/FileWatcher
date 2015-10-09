@@ -21,7 +21,7 @@ from __future__ import print_function
 from initialize import initialize
 from filewatcher import main_loop
 
-__version__ = 1.2
+__version__ = 1.3
 
 
 def main():

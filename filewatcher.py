@@ -30,6 +30,7 @@ from movies import (is_video_folder,
                     folder_translator,
                     rename_skipped,
                     process_root_level_movie)
+from music import is_audio_folder
 
 
 def debug_message(message):
@@ -70,17 +71,23 @@ def get_extension(filename):
 settings.get_extension = get_extension
 
 
-def move_folder(new_directory):
+def move_folder(new_directory, dir_type='movie'):
+    if dir_type is 'movie':
+        settings_dir = settings.movie_dir
+    elif dir_type is 'audio':
+        settings_dir = settings.audio_dir
+
     if new_directory is None:
         settings.debug_message("Something went wrong! Skipping!")
     else:
-        if not os.path.isdir(os.path.join(settings.movie_dir, new_directory)):
+
+        if not os.path.isdir(os.path.join(settings_dir, new_directory)):
 
             try:
                 shutil.move(os.path.join(settings.incoming_dir, new_directory),
-                            os.path.join(settings.movie_dir, new_directory))
+                            os.path.join(settings_dir, new_directory))
                 settings.debug_message("Move successful! Folder {} now located at {}".
-                                       format(new_directory, settings.movie_dir +
+                                       format(new_directory, settings_dir +
                                               new_directory))
             except (OSError, shutil.Error):
                 print("{} is already in the destination directory! Renaming!".
@@ -135,12 +142,12 @@ def root_level_files(files):
         settings.debug_message("Ignoring Thumbs.db")
 
     for prospect_file in files:
-        if settings.get_extension(prospect_file) in settings.video_formats:
+        if get_extension(prospect_file) in settings.video_formats:
             if not settings.in_use(os.path.join(settings.incoming_dir,
                                                 prospect_file)):
                 process_root_level_movie(prospect_file)
 
-        # if settings.get_extension(prospect_file) in settings.audio_formats:
+        # if get_extension(prospect_file) in settings.audio_formats:
         #     if not settings.in_use(os.path.join(settings.incoming_dir,
         #                                         prospect_file)):
         #         process_root_level_audio(prospect_file)
@@ -174,6 +181,15 @@ def process_folders(dirs):
                     else:
                         settings.debug_message("Folder does not appear to be a movie."
                                                "Skipping.")
+
+                    if is_audio_folder(directory, dir_files):
+                        #  There will eventually be a process_audio() function
+                        #  here, but for now we just need to move stuff.
+                        move_folder(directory, 'audio')
+                    else:
+                        settings.debug_message("Folder does not appear to be "
+                                               "an album. Skipping.")
+
             except IndexError:
                 dir_folders = [f for f in os.listdir(os.path.join(settings.
                                incoming_dir, directory)) if os.path.isdir(
