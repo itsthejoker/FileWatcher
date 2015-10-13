@@ -86,8 +86,8 @@ def folder_translator(foldername, title_parser=title_parser):
                 settings.debug_message("IMDbPy - returning ({}, {})".format(
                     maybe_title, maybe_year))
                 return(maybe_title, maybe_year)
-            except AttributeError:
-                # it can't find a year! Oh no! Give up for now.
+            except (AttributeError, IndexError):
+                # it can't find a title or year! Oh no! Give up for now.
                 return None
         else:
             # guess it's not installed. Crap.
