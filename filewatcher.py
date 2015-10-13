@@ -142,10 +142,11 @@ def root_level_files(files):
         settings.debug_message("Ignoring Thumbs.db")
 
     for prospect_file in files:
-        if get_extension(prospect_file) in settings.video_formats:
-            if not settings.in_use(os.path.join(settings.incoming_dir,
-                                                prospect_file)):
-                process_root_level_movie(prospect_file)
+        if not check_for_skips(prospect_file):
+            if get_extension(prospect_file) in settings.video_formats:
+                if not settings.in_use(os.path.join(settings.incoming_dir,
+                                                    prospect_file)):
+                    process_root_level_movie(prospect_file)
 
         # if get_extension(prospect_file) in settings.audio_formats:
         #     if not settings.in_use(os.path.join(settings.incoming_dir,
@@ -153,19 +154,28 @@ def root_level_files(files):
         #         process_root_level_audio(prospect_file)
 
 
+def check_for_skips(item):
+
+    if "[TV]" in item:
+        settings.debug_message("Found previously scanned TV folder. Skipping!")
+        return True
+    elif "[DUPLICATE]" in item:
+        settings.debug_message("Found previously scanned duplicate directory. "
+                               "Skipping!")
+        return True
+    elif "[SKIP]" in item:
+        settings.debug_message("Found previously scanned skipped directory."
+                               " Skipping again!")
+        return True
+    else:
+        return False
+
+
 def process_folders(dirs):
     for directory in dirs:
         settings.debug_message("Switching to directory {}".format(directory))
 
-        if "[TV]" in directory:
-            settings.debug_message("Found previously scanned TV folder. Skipping!")
-        elif "[DUPLICATE]" in directory:
-            settings.debug_message("Found previously scanned duplicate directory. "
-                                   "Skipping!")
-        elif "[SKIP]" in directory:
-            settings.debug_message("Found previously scanned skipped directory."
-                                   " Skipping again!")
-        else:
+        if not check_for_skips(directory):
 
             dir_files = [f for f in os.listdir(os.path.join(settings.
                          incoming_dir, directory)) if

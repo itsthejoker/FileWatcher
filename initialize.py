@@ -22,6 +22,12 @@ if sys.version_info.major < 3:
 else:
     import configparser
 
+try:
+    import imdb
+    imdb_import = True
+except ImportError:
+    imdb_import = False
+
 
 class settings:
     app_name = 'FileWatcher'
@@ -38,6 +44,8 @@ class settings:
     exts_to_delete = '.nfo, .txt, .jpg'
     video_formats = '.avi, .mkv, .mp4'
     audio_formats = '.mp3, .ogg, .flac, .aac, .wav, .m4a, .alac, .aiff'
+
+    imdb = False
 
 
 settings = settings()
@@ -168,6 +176,13 @@ def initialize(version, settings=settings):
             sys.exit()
 
     print(init_endings[set_init_phrase])
+
+    if imdb_import:
+        print('\nFound IMDbPy!')
+        settings.imdb = True
+    else:
+        print('\nCannot find IMDbPy - going without it.')
+
     print("Ready to go - starting main loop!")
     print("Running {}, version {}".format(settings.app_name, version))
     print("\nIncoming file directory: {}".format(settings.incoming_dir))

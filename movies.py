@@ -22,6 +22,12 @@ import shutil
 
 from initialize import settings
 
+try:  # settings.imdb hasn't loaded yet - need to figure out why.
+    import imdb
+    imdb_access = imdb.IMDb()
+except ImportError:
+    pass
+
 title_parser = re.compile("""
     (?P<title>[\w,.\-!'\s]+)
     \s(?:[\(\[]?
@@ -38,14 +44,15 @@ def rename_skipped(directory):
 
 def folder_translator(foldername, title_parser=title_parser):
     '''Uses regex to yoink the name and year out of movie titles.'''
-    settings.debug_message("Running folder/name translation on {}".format(foldername))
+    settings.debug_message("Running folder/name translation on {}".format(
+                           foldername))
 
     # check to see if we're operating on a file or a folder
     if settings.get_extension(foldername) in settings.video_formats:
         extension = settings.get_extension(foldername)
         foldername = foldername[:-len(extension)].replace(".", " ")
-        foldername = foldername.replace("_", " ")
-        foldername = foldername + extension
+        foldername_less_extension = foldername.replace("_", " ")
+        foldername = foldername_less_extension + extension
     else:
         foldername = foldername.replace(".", " ")
         foldername = foldername.replace("_", " ")
@@ -60,7 +67,31 @@ def folder_translator(foldername, title_parser=title_parser):
         x = title_data.group("title")
         x = title_data.group("year")
     except AttributeError:
-        return None
+        settings.debug_message("folder_translator - AttributeError!")
+        title = foldername_less_extension
+
+        if settings.imdb:
+            settings.debug_message("Attempting lookup through IMDbPy!")
+            settings.debug_message("IMDbPy - Searching for year of {}".format(
+                                   title))
+            try:
+                maybe_title = imdb_access.search_movie(
+                    "{}".format(title))[0]['title']
+                settings.debug_message("IMDbPy - I think I found it! It's {}!".
+                                       format(maybe_title))
+                maybe_year = imdb_access.search_movie(
+                    "{}".format(title))[0]['year']
+                settings.debug_message("IMDbPy - I think I found it! It's {}!".
+                                       format(maybe_year))
+                settings.debug_message("IMDbPy - returning ({}, {})".format(
+                    maybe_title, maybe_year))
+                return(maybe_title, maybe_year)
+            except AttributeError:
+                # it can't find a year! Oh no! Give up for now.
+                return None
+        else:
+            # guess it's not installed. Crap.
+            return None
 
     return (
         title_data.group("title"),
@@ -75,10 +106,17 @@ def rename_duplicate(directory):
 
 
 def process_root_level_movie(movie):
-    renamed_movie = "{} ({})".format(folder_translator(movie)[0],
-                                     folder_translator(movie)[1])
 
-    settings.debug_message("Moving root level file {} into new folder!".format(movie))
+    translated_folder = folder_translator(movie)
+    if translated_folder is not None:
+        renamed_movie = "{} ({})".format(translated_folder[0],
+                                         translated_folder[1])
+    else:
+        rename_skipped(movie)
+        return
+
+    settings.debug_message("Moving root level file {} into new folder!".format(
+                           movie))
     if not os.path.isdir(os.path.join(settings.movie_dir, renamed_movie)):
 
         try:
