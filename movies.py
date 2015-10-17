@@ -120,7 +120,13 @@ def process_root_level_movie(movie):
     if not os.path.isdir(os.path.join(settings.movie_dir, renamed_movie)):
 
         try:
-            settings.debug_message("Creating folder for root level file {}".format(movie))
+
+            for banned_ch in settings.banned_characters:
+                if banned_ch in renamed_movie:
+                    renamed_movie = renamed_movie.replace(banned_ch, "")
+
+            settings.debug_message("Creating folder for root level file {}"
+                                   .format(movie))
             os.mkdir(os.path.join(settings.incoming_dir, renamed_movie))
             shutil.move(os.path.join(settings.incoming_dir, movie),
                         os.path.join(settings.incoming_dir, renamed_movie,

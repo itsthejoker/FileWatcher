@@ -47,6 +47,8 @@ class settings:
 
     imdb = False
 
+    banned_characters = ("/", "\\", ":", "*", "?", '"', "<", ">")
+
 
 settings = settings()
 
