@@ -87,7 +87,7 @@ def move_folder(new_directory, dir_type='movie'):
                 shutil.move(os.path.join(settings.incoming_dir, new_directory),
                             os.path.join(settings_dir, new_directory))
                 settings.debug_message("Move successful! Folder {} now located at {}".
-                                       format(new_directory, settings_dir +
+                                       format(new_directory, settings_dir + "\\" +
                                               new_directory))
             except (OSError, shutil.Error):
                 print("{} is already in the destination directory! Renaming!".
@@ -102,7 +102,9 @@ def move_folder(new_directory, dir_type='movie'):
 def rename_folder(directory):
     settings.debug_message("Attempting rename of parent folder!")
 
-    if folder_translator(directory) is None:
+    translated_folder = folder_translator(directory)
+
+    if translated_folder is None:
         print("{} has an issue I can't recover from. Skipping!".format(directory))
         try:
             rename_skipped(directory)
@@ -110,8 +112,8 @@ def rename_folder(directory):
             settings.debug_message("{} is locked by the OS. Skipping!".format(directory))
             pass
     else:
-        new_directory = "{} ({})".format(folder_translator(directory)[0],
-                                         folder_translator(directory)[1])
+        new_directory = "{} ({})".format(translated_folder[0],
+                                         translated_folder[1])
         try:
             os.rename(os.path.join(settings.incoming_dir, directory), os.path.join(
                       settings.incoming_dir, new_directory))

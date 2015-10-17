@@ -68,7 +68,14 @@ def folder_translator(foldername, title_parser=title_parser):
         x = title_data.group("year")
     except AttributeError:
         settings.debug_message("folder_translator - AttributeError!")
-        title = foldername_less_extension
+
+        # if it's a folder, foldername_less_extension will not have been
+        # created; we catch the unbound error and just use the normal folder
+        # name here for that reason
+        try:
+            title = foldername_less_extension
+        except UnboundLocalError:
+            title = foldername
 
         if settings.imdb:
             settings.debug_message("Attempting lookup through IMDbPy!")
