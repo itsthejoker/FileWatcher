@@ -203,13 +203,21 @@ def process_folders(dirs):
                                                "an album. Skipping.")
 
             except IndexError:
-                dir_folders = [f for f in os.listdir(os.path.join(settings.
-                               incoming_dir, directory)) if os.path.isdir(
-                               os.path.join(settings.incoming_dir,
-                                            directory, f))]
 
-                if dir_folders[0].lower() == "video_ts":
-                    rename_and_move(directory)
+                try:
+
+                    dir_folders = [f for f in os.listdir(os.path.join(settings.
+                                   incoming_dir, directory)) if os.path.isdir(
+                                   os.path.join(settings.incoming_dir,
+                                                directory, f))]
+
+                    if dir_folders[0].lower() == "video_ts":
+                        rename_and_move(directory)
+
+                except IndexError:
+                    settings.debug_message("Folder appears to be empty. Will "
+                                           "mark as skip and move on.")
+                    rename_skipped(directory)
 
             else:
                 settings.debug_message("Can't use folder! Moving to next folder.")
