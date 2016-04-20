@@ -17,11 +17,12 @@
 '''
 
 from __future__ import print_function
+import sys
 
 from initialize import initialize
 from filewatcher import main_loop
 
-__version__ = 1.4
+__version__ = 1.5
 
 
 def main():
@@ -33,4 +34,8 @@ def main():
             main_loop()
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n\nReceived keyboard interrupt. Stopping program!")
+        sys.exit(1)

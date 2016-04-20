@@ -48,7 +48,8 @@ def in_use(test_file):
 
     try:
         os.rename(test_file, test_file+"_")
-        settings.debug_message("Testing to see if {} is in use".format(test_file))
+        settings.debug_message("Testing to see if {} is in use".
+                               format(test_file))
         os.rename(test_file+"_", test_file)
         settings.debug_message("Not in use! Proceed!")
         return False
@@ -86,9 +87,10 @@ def move_folder(new_directory, dir_type='movie'):
             try:
                 shutil.move(os.path.join(settings.incoming_dir, new_directory),
                             os.path.join(settings_dir, new_directory))
-                settings.debug_message("Move successful! Folder {} now located at {}".
-                                       format(new_directory, settings_dir + "\\" +
-                                              new_directory))
+                settings.debug_message(
+                    "Move successful! Folder {} now located at {}".
+                    format(new_directory, settings_dir + "\\" +
+                           new_directory))
             except (OSError, shutil.Error):
                 print("{} is already in the destination directory! Renaming!".
                       format(new_directory))
@@ -105,22 +107,25 @@ def rename_folder(directory):
     translated_folder = folder_translator(directory)
 
     if translated_folder is None:
-        print("{} has an issue I can't recover from. Skipping!".format(directory))
+        print("{} has an issue I can't recover from. Skipping!".
+              format(directory))
         try:
             rename_skipped(directory)
         except OSError:
-            settings.debug_message("{} is locked by the OS. Skipping!".format(directory))
+            settings.debug_message("{} is locked by the OS. Skipping!".
+                                   format(directory))
             pass
     else:
         new_directory = "{} ({})".format(translated_folder[0],
                                          translated_folder[1])
         try:
-            os.rename(os.path.join(settings.incoming_dir, directory), os.path.join(
+            os.rename(os.path.join(settings.incoming_dir, directory),
+                      os.path.join(
                       settings.incoming_dir, new_directory))
             settings.debug_message("Rename successful!")
         except OSError:
-            settings.debug_message("Access denied while trying to rename {}!".format(
-                                   new_directory))
+            settings.debug_message("Access denied while trying to rename {}!".
+                                   format(new_directory))
             return None
 
         return new_directory
@@ -186,13 +191,13 @@ def process_folders(dirs):
             try:
                 if not in_use(os.path.join(settings.incoming_dir, directory,
                               dir_files[0])):
-                    settings.debug_message("Folder is good to go - time to see if "
-                                           "it's a video folder!")
+                    settings.debug_message("Folder is good to go - time to see"
+                                           " if it's a video folder!")
                     if is_video_folder(directory, dir_files):
                         process_movie(directory, dir_files, rename_and_move)
                     else:
-                        settings.debug_message("Folder does not appear to be a movie."
-                                               "Skipping.")
+                        settings.debug_message("Folder does not appear to be a"
+                                               "movie. Skipping.")
 
                     if is_audio_folder(directory, dir_files):
                         #  There will eventually be a process_audio() function
@@ -220,7 +225,8 @@ def process_folders(dirs):
                     rename_skipped(directory)
 
             else:
-                settings.debug_message("Can't use folder! Moving to next folder.")
+                settings.debug_message("Can't use folder!"
+                                       " Moving to next folder.")
 
 
 def status_update(message):
@@ -246,7 +252,8 @@ def main_loop():
     if files is not []:
         root_level_files(files)
 
-    settings.debug_message("Sleeping for {} seconds!".format(settings.delay_time))
+    settings.debug_message("Sleeping for {} seconds!".
+                           format(settings.delay_time))
 
     status_update("Sleeping for {} seconds!\r".format(settings.delay_time))
     time.sleep(int(settings.delay_time))

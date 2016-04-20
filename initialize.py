@@ -45,7 +45,7 @@ class settings:
     video_formats = '.avi, .mkv, .mp4'
     audio_formats = '.mp3, .ogg, .flac, .aac, .wav, .m4a, .alac, .aiff'
 
-    imdb = False
+    imdb_found = False
 
     banned_characters = ("/", "\\", ":", "*", "?", '"', "<", ">")
 
@@ -180,8 +180,8 @@ def initialize(version, settings=settings):
     print(init_endings[set_init_phrase])
 
     if imdb_import:
+        settings.imdb_found = True
         print('\nFound IMDbPy!')
-        settings.imdb = True
     else:
         print('\nCannot find IMDbPy - going without it.')
 

@@ -173,12 +173,14 @@ def process_root_level_movie(movie):
 
 def is_video_folder(directory, dir_files):
     for directory_file in dir_files:
-        settings.debug_message("Testing file {} for video format!".format(directory_file))
+        settings.debug_message("Testing file {} for video format!".
+                               format(directory_file))
         if settings.get_extension(directory_file) in settings.video_formats:
             settings.debug_message("Found video folder: {}".format(directory))
             return True
 
-    settings.debug_message("Folder does not contain first level video files. Skipping.")
+    settings.debug_message("Folder does not contain first level video files."
+                           " Skipping.")
     return False
 
 
@@ -214,7 +216,7 @@ def delete_samples(directory, dir_files):
     for thing_to_delete in dir_files:
         if settings.get_extension(thing_to_delete) in settings.video_formats:
             if is_sample(directory, thing_to_delete):
-                settings.debug_message("Found sample movie {}! ENGAGE LASERS"
+                settings.debug_message("Found sample movie {}! ENGAGING LASERS"
                                        .format(thing_to_delete))
                 os.remove(os.path.join(settings.incoming_dir, directory,
                           thing_to_delete))

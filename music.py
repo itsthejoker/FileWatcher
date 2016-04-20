@@ -22,12 +22,14 @@ from initialize import settings
 
 def is_audio_folder(directory, dir_files):
     for directory_file in dir_files:
-        settings.debug_message("Testing file {} for audio format!".format(directory_file))
+        settings.debug_message("Testing file {} for audio format!".
+                               format(directory_file))
         if settings.get_extension(directory_file) in settings.audio_formats:
             settings.debug_message("Found audio folder: {}".format(directory))
             return True
         else:
-            settings.debug_message("Folder does not contain first level audio files. Skipping.")
+            settings.debug_message("Folder does not contain first level audio "
+                                   "files. Skipping.")
             return False
 
 
