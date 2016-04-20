@@ -20,7 +20,7 @@ Starting a few versions ago, FileWatcher now has support for IMDbPy! If a) IMDbP
 * root level movie
 * filename contains title, but no year (example: aladdin.mp4)
 
-...then FileWatcher will attempt to query IMDb and try to pull the year for you. If the query succeeds and FileWatcher is confident enough that it's the right file, it will rename the file (Aladdin (1995).mp4), create a folder for it, place the newly-renamed file into the folder, and treat it like a normal movie object for sorting. It's very cool.
+...then FileWatcher will attempt to query IMDb and try to pull the year for you. If the query succeeds and FileWatcher is confident enough that it's the right file, it will rename the file (Aladdin (1992).mp4), create a folder for it, place the newly-renamed file into the folder, and treat it like a normal movie object for sorting. It's very cool.
 
 ### A Note About Renaming
 When the program renames a folder, it will parse the title of the folder and attempt to extract the title and year from it. Examples:
