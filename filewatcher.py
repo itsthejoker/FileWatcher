@@ -47,10 +47,10 @@ def in_use(test_file):
     # into race conditions will not be an issue.
 
     try:
-        os.rename(test_file, test_file+"_")
+        os.rename(test_file, test_file + "_")
         settings.debug_message("Testing to see if {} is in use".
                                format(test_file))
-        os.rename(test_file+"_", test_file)
+        os.rename(test_file + "_", test_file)
         settings.debug_message("Not in use! Proceed!")
         return False
     except OSError:

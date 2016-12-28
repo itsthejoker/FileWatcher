@@ -103,7 +103,7 @@ def folder_translator(foldername, title_parser=title_parser):
     return (
         title_data.group("title"),
         title_data.group("year")
-        )
+    )
 
 
 def rename_duplicate(directory):
@@ -189,7 +189,7 @@ def is_tv_show(directory, directory_file):
     # for us
 
     if (int(os.path.getsize(os.path.join(settings.incoming_dir, directory,
-                                         directory_file)))/1000000) < int(
+                                         directory_file))) / 1000000) < int(
             settings.min_movie_size):
         # check to see if it's a "sample" video. I hate those.
         if is_sample(directory, directory_file):
@@ -203,7 +203,7 @@ def is_tv_show(directory, directory_file):
 
 def is_sample(directory, directory_file):
     if (int(os.path.getsize(os.path.join(settings.incoming_dir, directory,
-                            directory_file)))/1000000) < int(
+                            directory_file))) / 1000000) < int(
             settings.min_episode_size):
         return True
     else:
