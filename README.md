@@ -17,12 +17,12 @@ If a folder contains video files, it will tag the directory if it cannot process
 * [SKIP] - This is saved for strange cases where it has detected a movie folder but cannot finish the processing for some reason or another. Once marked, it will ignore this directory until you either manually remove the tag or fix whatever it has complained about.
 
 ### IMDbPy!
-~~Starting a few versions ago, FileWatcher now has support for IMDbPy! If a) IMDbPy is installed and b) the following criteria are met:
+<del>Starting a few versions ago, FileWatcher now has support for IMDbPy! If a) IMDbPy is installed and b) the following criteria are met:
 
 * root level movie
 * filename contains title, but no year (example: aladdin.mp4)
 
-...then FileWatcher will attempt to query IMDb and try to pull the year for you. If the query succeeds and FileWatcher is confident enough that it's the right file, it will rename the file (Aladdin (1992).mp4), create a folder for it, place the newly-renamed file into the folder, and treat it like a normal movie object for sorting. It's very cool.~~
+...then FileWatcher will attempt to query IMDb and try to pull the year for you. If the query succeeds and FileWatcher is confident enough that it's the right file, it will rename the file (Aladdin (1992).mp4), create a folder for it, place the newly-renamed file into the folder, and treat it like a normal movie object for sorting. It's very cool.</del>
 
 IMDbPy does not work in Python3! I'll try to recreate the behavior that we need inside the actual application, but that's not done yet. For now, this functionality is deprecated.
 
