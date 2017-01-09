@@ -36,7 +36,7 @@ def cli(ctx):
     You can also optionally control the time delay between checks of the
     incoming folder by running it with the --delay=(number in seconds). If
     you'd like to see what it's currently doing, you can also use the --debug
-    flag. Warning -- this is *very* verbose.
+    flag. Warning -- this is **very** verbose.
     '''
     pass
 
