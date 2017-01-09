@@ -20,7 +20,7 @@ import re
 import os
 import shutil
 
-from initialize import settings
+from core import settings
 
 try:  # settings.imdb hasn't loaded yet - need to figure out why.
     import imdb
@@ -64,8 +64,8 @@ def folder_translator(foldername, title_parser=title_parser):
 
     try:
         # try and force an attribute error before it happens
-        x = title_data.group("title")
-        x = title_data.group("year")
+        x = title_data.group("title")  # noqa: F841
+        x = title_data.group("year")  # noqa: F841
     except AttributeError:
         settings.debug_message("folder_translator - AttributeError!")
 
