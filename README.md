@@ -17,19 +17,19 @@ If a folder contains video files, it will tag the directory if it cannot process
 * [SKIP] - This is saved for strange cases where it has detected a movie folder but cannot finish the processing for some reason or another. Once marked, it will ignore this directory until you either manually remove the tag or fix whatever it has complained about.
 
 ### Open Movie Database!
-Starting a few versions ago, FileWatcher now has support for OMDb! It will perform a check against the OMDb if the following criteria are met:
+FileWatcher now has support for the OMDb! It will perform a check against the OMDb if the following criteria are met:
 
 * root level movie
-* filename contains title, but no year (example: aladdin.mp4)
+* filename contains a title, but no year (example: `aladdin.mp4`)
 
-...then FileWatcher will attempt to query the OMDb and try to pull the year for you. If the query succeeds and FileWatcher is confident enough that it's the right file, it will rename the file (`Aladdin (1992).mp4`), create a folder for it, place the newly-renamed file into the folder, and treat it like a normal movie object for sorting. It's very cool.
+...then FileWatcher will attempt to query the OMDb and try to pull the year for you. If the query succeeds, it will rename the file (`Aladdin (1992).mp4`), create a folder for it, place the newly-renamed file into the folder, and treat it like a normal movie object for sorting. It's very cool.
 
 ### A Note About Renaming
 When the program renames a folder, it will parse the title of the folder and attempt to extract the title and year from it. Examples:
-* Transporter 2 (2005) [1080p] --> Transporter 2 (2005)
-* Daddy.Long.Legs.1955.720p.BluRay.x264 --> Daddy Long Legs (1955)
-* Sweeney Todd in Concert 2001.mp4 --> Sweeney Todd in Concert (2001)\Sweeney Todd in Concert 2001.mp4
-* Season 10 --> [TV] Season 10
+* `Transporter 2 (2005) [1080p]` --> `Transporter 2 (2005)`
+* `Daddy.Long.Legs.1955.720p.BluRay.x264` --> `Daddy Long Legs (1955)`
+* `Sweeney Todd in Concert 2001.mp4` --> `Sweeney Todd in Concert (2001)\Sweeney Todd in Concert 2001.mp4`
+* `Season 10` --> `[TV] Season 10`
 
 The program will barf if it cannot find a title or a year, but that's why the [SKIP] tag exists.
 
