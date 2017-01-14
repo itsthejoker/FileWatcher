@@ -1,3 +1,5 @@
 click
 configobj
 pytest
+requests
+addict

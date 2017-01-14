@@ -23,7 +23,7 @@ import click
 from core.initialize import initialize
 from core.filewatcher import main_loop
 
-__version__ = '2.0.0'
+__version__ = '2.1.0'
 
 
 @click.group()
