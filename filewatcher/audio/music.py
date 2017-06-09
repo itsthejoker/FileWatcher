@@ -17,7 +17,7 @@
 
 from __future__ import print_function
 
-from filewatcher.core import settings
+from core import settings
 
 
 def is_audio_folder(directory, dir_files):

@@ -25,18 +25,18 @@ import sys
 
 import click
 
-from filewatcher.core import settings
-from filewatcher.core import get_files
-from filewatcher.core import get_folders
-from filewatcher.core import get_root_directories
-from filewatcher.core import get_root_files
-from filewatcher.movies.movies import (is_video_folder,
+from core import settings
+from core import get_files
+from core import get_folders
+from core import get_root_directories
+from core import get_root_files
+from movies.movies import (is_video_folder,
                            process_movie,
                            rename_duplicate,
                            folder_translator,
                            rename_skipped,
                            process_root_level_movie)
-from filewatcher.audio.music import is_audio_folder
+# from audio.music import is_audio_folder
 
 
 def debug_message(message):

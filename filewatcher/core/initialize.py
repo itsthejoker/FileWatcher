@@ -21,9 +21,9 @@ import textwrap
 import click
 from configobj import ConfigObj
 
-from filewatcher.core import init_phrases
-from filewatcher.core import init_endings
-from filewatcher.core import settings
+from core import init_phrases
+from core import init_endings
+from core import settings
 
 
 def generate_config(updated_config=False):
@@ -152,7 +152,7 @@ def load_config(ctx, loaded_config):
 def initialize(ctx, settings=settings):
 
     # avoid circular imports
-    from filewatcher.main import __version__
+    from main import __version__
 
     set_init_phrase = random.randrange(len(init_phrases))
 
