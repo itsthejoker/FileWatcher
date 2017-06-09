@@ -20,8 +20,8 @@ from __future__ import print_function
 
 import click
 
-from core.initialize import initialize
-from core.filewatcher import main_loop
+from filewatcher.core.initialize import initialize
+from filewatcher.core.filewatcher import main_loop
 
 __version__ = '2.1.0'
 

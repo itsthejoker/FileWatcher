@@ -21,15 +21,9 @@ import textwrap
 import click
 from configobj import ConfigObj
 
-from core import init_phrases
-from core import init_endings
-from core import settings
-
-try:
-    import imdb  # noqa: F401
-    imdb_import = True
-except ImportError:
-    imdb_import = False
+from filewatcher.core import init_phrases
+from filewatcher.core import init_endings
+from filewatcher.core import settings
 
 
 def generate_config(updated_config=False):
@@ -158,7 +152,7 @@ def load_config(ctx, loaded_config):
 def initialize(ctx, settings=settings):
 
     # avoid circular imports
-    from main import __version__
+    from filewatcher.main import __version__
 
     set_init_phrase = random.randrange(len(init_phrases))
 
@@ -173,12 +167,6 @@ def initialize(ctx, settings=settings):
     load_config(ctx, loaded_config)
 
     click.echo(init_endings[set_init_phrase])
-
-    if imdb_import:
-        settings.imdb_found = True
-        click.echo('\nFound IMDbPy!')
-    else:
-        click.echo('\nCannot find IMDbPy - going without it.')
 
     click.echo("Ready to go - starting main loop!")
     click.echo("Running {}, version {}".format(settings.app_name, __version__))

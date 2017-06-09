@@ -25,18 +25,18 @@ import sys
 
 import click
 
-from core import settings
-from core import get_files
-from core import get_folders
-from core import get_root_directories
-from core import get_root_files
-from movies.movies import (is_video_folder,
+from filewatcher.core import settings
+from filewatcher.core import get_files
+from filewatcher.core import get_folders
+from filewatcher.core import get_root_directories
+from filewatcher.core import get_root_files
+from filewatcher.movies.movies import (is_video_folder,
                            process_movie,
                            rename_duplicate,
                            folder_translator,
                            rename_skipped,
                            process_root_level_movie)
-from audio.music import is_audio_folder
+from filewatcher.audio.music import is_audio_folder
 
 
 def debug_message(message):
@@ -100,7 +100,7 @@ def move_folder(new_directory, dir_type='movie'):
                 )
                 settings.debug_message(
                     "Move successful! Folder {} now located at {}".format(
-                        new_directory, settings_dir + "\\" + new_directory
+                        new_directory, settings_dir + '\\' + new_directory
                     )
                 )
             except (OSError, shutil.Error):
@@ -234,14 +234,14 @@ def process_folders(dirs):
                             "Folder does not appear to be a movie. Skipping."
                         )
 
-                    if is_audio_folder(directory, dir_files):
-                        #  There will eventually be a process_audio() function
-                        #  here, but for now we just need to move stuff.
-                        move_folder(directory, 'audio')
-                    else:
-                        settings.debug_message(
-                            "Folder does not appear to be an album. Skipping."
-                        )
+                    # if is_audio_folder(directory, dir_files):
+                    #     #  There will eventually be a process_audio() function
+                    #     #  here, but for now we just need to move stuff.
+                    #     move_folder(directory, 'audio')
+                    # else:
+                    #     settings.debug_message(
+                    #         "Folder does not appear to be an album. Skipping."
+                    #     )
 
             except IndexError:
                 try:

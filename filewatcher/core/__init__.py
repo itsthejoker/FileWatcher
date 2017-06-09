@@ -100,8 +100,6 @@ class base_settings(object):
             '.mp3, .ogg, .flac, .aac, .wav, .m4a, .alac, .aiff'
         )
 
-        self._imdb_found = False
-
     @property
     def app_name(self):
         return self._app_name
@@ -204,10 +202,6 @@ class base_settings(object):
     @audio_formats.setter
     def audio_formats(self, value):
         self._audio_formats = value
-
-    @property
-    def imdb_found(self):
-        return self._imdb_found
 
     @property
     def banned_characters(self):
