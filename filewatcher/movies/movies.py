@@ -20,8 +20,9 @@ import re
 import os
 import shutil
 
-from core import settings
-from movies import OMDbAPI
+from filewatcher.core import settings
+from filewatcher.movies import OMDbAPI
+
 
 title_parser = re.compile("""
     (?P<title>[\w,.\-!'\s]+)

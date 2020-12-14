@@ -1,6 +1,6 @@
 import os
 
-import click
+from filewatcher.core.console import console
 
 #  useless, but fun!
 init_phrases = (
@@ -125,7 +125,7 @@ class base_settings(object):
         if number > 0:
             self._delay_time = number
         else:
-            click.echo("Warning! You can't set the delay time to less than 0!")
+            console.print("Warning! You can't set the delay time to less than 0!")
 
     @property
     def debug(self):

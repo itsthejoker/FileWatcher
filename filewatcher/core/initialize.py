@@ -18,12 +18,11 @@ import random
 import sys
 import textwrap
 
-import click
 from configobj import ConfigObj
+import pkg_resources
 
-from core import init_phrases
-from core import init_endings
-from core import settings
+from filewatcher.core import init_endings, init_phrases, settings
+from filewatcher.core.console import console
 
 
 def generate_config(updated_config=False):
@@ -80,15 +79,15 @@ def generate_config(updated_config=False):
 
     config_nonexist_error = textwrap.fill(
         'Configuration not found, a default config.ini was created.'
-        'You must edit it before using this script.\n'
-        'Application exiting.',
+        ' You must edit it before using this script.'
+        ' Application exiting.',
         width=70
     )
 
     config_out_of_date_error = textwrap.fill(
-        'Configuration found is for an older version of the software. It has '
-        'been backed up and a new one has been generated; please fill in the '
-        'required information in the new config.ini and run the program again.',
+        'Configuration found is for an older version of the software. It has'
+        ' been backed up and a new one has been generated; please fill in the'
+        ' required information in the new config.ini and run the program again.',
         width=70
     )
 
@@ -96,27 +95,19 @@ def generate_config(updated_config=False):
     #  version of the software and we need to update the config file - that way
     #  we can just update in place and keep rolling.
     if updated_config:
-        click.echo(config_out_of_date_error)
+        console.print(config_out_of_date_error)
     else:
-        click.echo(config_nonexist_error)
+        console.print(config_nonexist_error)
 
     sys.exit()
 
 
-def load_config(ctx, loaded_config):
+def load_config(loaded_config):
     settings.app_name = loaded_config['Info']['application_name']
 
-    if not ctx.obj['DELAY']:
-        settings.delay_time = int(loaded_config['Info']['delay_time'])
-    else:
-        settings.delay_time = int(ctx.obj['DELAY'])
-        click.echo(
-            "Overriding delay time in config for passed in delay of {}".format(
-                int(ctx.obj['DELAY'])
-            )
-        )
+    settings.delay_time = int(loaded_config['Info']['delay_time'])
 
-    settings.debug = ctx.obj['DEBUG']
+    settings.debug = True
 
     settings.incoming_dir = loaded_config['Directories']['incoming_directory']
     settings.movie_dir = loaded_config['Directories']['movie_directory']
@@ -140,39 +131,43 @@ def load_config(ctx, loaded_config):
     ]
 
     # check validity of config entries
-    for dir_checker in (settings.incoming_dir, settings.movie_dir,
-                        settings.audio_dir):
+    for dir_checker in (
+            settings.incoming_dir, settings.movie_dir, settings.audio_dir
+    ):
         if not os.path.isdir(dir_checker):
-            click.echo("Directory \"{}\" is invalid! Please check the config!"
-                       "\n".format(dir_checker))
-            click.echo("Exiting application.")
+            console.print(
+                f"[red]Directory \"{dir_checker}\" is invalid! Please check the config!",
+                justify="center"
+            )
+            console.print("Exiting application.", justify="center")
             sys.exit()
 
 
-def initialize(ctx, settings=settings):
-
-    # avoid circular imports
-    from main import __version__
+def initialize(settings=settings):
 
     set_init_phrase = random.randrange(len(init_phrases))
 
     # start initialization
-    click.echo("{}...".format(init_phrases[set_init_phrase]))
+    console.log("{}...".format(init_phrases[set_init_phrase]))
 
     if os.path.isfile("./config.ini"):
         loaded_config = ConfigObj('config.ini')
     else:
+        # if this fires, it will exit after building the config
         generate_config()
 
-    load_config(ctx, loaded_config)
+    # noinspection PyUnboundLocalVariable
+    load_config(loaded_config)
 
-    click.echo(init_endings[set_init_phrase])
+    console.log(init_endings[set_init_phrase])
+    console.print()
+    __version__ = pkg_resources.get_distribution('filewatcher').version
 
-    click.echo("Ready to go - starting main loop!")
-    click.echo("Running {}, version {}".format(settings.app_name, __version__))
-    click.echo("\nIncoming file directory: {}".format(settings.incoming_dir))
-    click.echo("Movie directory: {}".format(settings.movie_dir))
-    click.echo("Audio directory: {}".format(settings.audio_dir))
+    console.print("Ready to go - starting main loop!")
+    console.print(f"Running {settings.app_name}, version {__version__}")
+    console.print(f"\nIncoming file directory: {settings.incoming_dir}")
+    console.print(f"Movie directory: {settings.movie_dir}")
+    console.print(f"Audio directory: {settings.audio_dir}")
 
     intro_text = (
         "Folders identified as containing movies (along with root level "
@@ -181,8 +176,8 @@ def initialize(ctx, settings=settings):
         "have [TV] in front of it and otherwise left alone."
     )
 
-    click.echo()  # blank line
-    click.echo(textwrap.fill(intro_text, width=70))
+    console.print()  # blank line
+    console.print(textwrap.fill(intro_text, width=70))
 
     #  successful init!
     return True

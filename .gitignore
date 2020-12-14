@@ -1,3 +1,7 @@
 __pycache__
 config.asdf
 config.*
+.DS_Store
+.idea/
+.venv/
+*.egg-info/

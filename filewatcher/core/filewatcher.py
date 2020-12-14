@@ -19,36 +19,36 @@
 from __future__ import print_function
 
 import os
-import time
 import shutil
 import sys
+import time
 
-import click
+from filewatcher.core import (
+    settings, get_files, get_folders, get_root_files, get_root_directories
+)
+from filewatcher.movies.movies import (
+    is_video_folder,
+    process_movie,
+    rename_duplicate,
+    rename_skipped,
+    folder_translator,
+    process_root_level_movie
+)
+from filewatcher.core.console import console
 
-from core import settings
-from core import get_files
-from core import get_folders
-from core import get_root_directories
-from core import get_root_files
-from movies.movies import (is_video_folder,
-                           process_movie,
-                           rename_duplicate,
-                           folder_translator,
-                           rename_skipped,
-                           process_root_level_movie)
+
 # from audio.music import is_audio_folder
 
 
 def debug_message(message):
-
     if settings.debug:
-        click.echo("DEBUG - {}".format(message), file=sys.stderr)
+        console.log(message)
+
 
 settings.debug_message = debug_message
 
 
 def in_use(test_file):
-
     # yes, possible race condition, but due to the system we're putting this
     # into race conditions will not be an issue.
 
@@ -64,17 +64,18 @@ def in_use(test_file):
         settings.debug_message("File in use!")
         return True
 
+
 settings.in_use = in_use
 
 
 def get_extension(filename):
-
     last_dot = filename.rfind('.')
     # if rfind fails, it returns -1
     if last_dot > 0:
         return filename[last_dot:]
     else:
         return None
+
 
 settings.get_extension = get_extension
 
@@ -124,36 +125,23 @@ def rename_folder(directory):
     translated_folder = folder_translator(directory)
 
     if translated_folder is None:
-        print(
-            "{} has an issue I can't recover from. Skipping!".format(
-                directory
-            )
-        )
+        print(f"{directory} has an issue I can't recover from. Skipping!")
         try:
             rename_skipped(directory)
         except OSError:
-            settings.debug_message(
-                "{} is locked by the OS. Skipping!".format(directory)
-            )
-            pass
+            settings.debug_message(f"{directory} is locked by the OS. Skipping!")
     else:
-        new_directory = "{} ({})".format(translated_folder[0],
-                                         translated_folder[1])
+        title, year = translated_folder
+        new_directory = f"{title} ({year})"
         try:
             os.rename(
-                os.path.join(
-                    settings.incoming_dir, directory
-                ),
-                os.path.join(
-                    settings.incoming_dir, new_directory
-                )
+                os.path.join(settings.incoming_dir, directory),
+                os.path.join(settings.incoming_dir, new_directory)
             )
             settings.debug_message("Rename successful!")
         except OSError:
             settings.debug_message(
-                "Access denied while trying to rename {}!".format(
-                    new_directory
-                )
+                f"Access denied while trying to rename {new_directory}!"
             )
             return None
 
@@ -163,15 +151,13 @@ def rename_folder(directory):
 def rename_and_move(directory):
     new_folder = rename_folder(directory)
     if type(new_folder) is None:
-        settings.debug_message(
-            "Encountered an issue with {}! Skipping!".format(directory)
-        )
+        settings.debug_message(f"Encountered an issue with {directory}! Skipping!")
     else:
         move_folder(new_folder)
 
 
 def root_level_files(files):
-    settings.debug_message("Found root level files: {}".format(files))
+    settings.debug_message(f"Found root level files: {files}")
 
     files = [f for f in files if f not in settings.filenames_to_ignore]
 
@@ -179,9 +165,7 @@ def root_level_files(files):
         if not check_for_skips(prospect_file):
             if get_extension(prospect_file) in settings.video_formats:
                 if not settings.in_use(
-                    os.path.join(
-                        settings.incoming_dir, prospect_file
-                    )
+                        os.path.join(settings.incoming_dir, prospect_file)
                 ):
                     process_root_level_movie(prospect_file)
 
@@ -192,11 +176,8 @@ def root_level_files(files):
 
 
 def check_for_skips(item):
-
     if "[TV]" in item:
-        settings.debug_message(
-            "Found previously scanned TV folder. Skipping!"
-        )
+        settings.debug_message("Found previously scanned TV folder. Skipping!")
         return True
     elif "[DUPLICATE]" in item:
         settings.debug_message(
@@ -214,18 +195,18 @@ def check_for_skips(item):
 
 def process_folders(dirs):
     for directory in dirs:
-        settings.debug_message("Switching to directory {}".format(directory))
+        settings.debug_message(f"Switching to directory {directory}")
 
         if not check_for_skips(directory):
 
             dir_files = get_files(directory)
 
             try:
-                if not in_use(os.path.join(settings.incoming_dir, directory,
-                              dir_files[0])):
+                if not in_use(os.path.join(
+                        settings.incoming_dir, directory, dir_files[0]
+                )):
                     settings.debug_message(
-                        "Folder is good to go - time to see if it's a video "
-                        "folder!"
+                        "Folder is good to go - time to see if it's a video folder!"
                     )
                     if is_video_folder(directory, dir_files):
                         process_movie(directory, dir_files, rename_and_move)
@@ -252,8 +233,7 @@ def process_folders(dirs):
 
                 except IndexError:
                     settings.debug_message(
-                        "Folder appears to be empty. Will mark as skip and "
-                        "move on."
+                        "Folder appears to be empty. Will mark as skip and move on."
                     )
                     rename_skipped(directory)
 
@@ -261,11 +241,6 @@ def process_folders(dirs):
                 settings.debug_message(
                     "Can't use folder! Moving to next folder."
                 )
-
-
-def status_update(message):
-    sys.stdout.write(message)
-    sys.stdout.flush()
 
 
 def main_loop():
@@ -288,6 +263,6 @@ def main_loop():
         "Sleeping for {} seconds!".format(settings.delay_time)
     )
 
-    status_update("Sleeping for {} seconds!\r".format(settings.delay_time))
+    console.print(f"Sleeping for {settings.delay_time} seconds!\r")
     time.sleep(int(settings.delay_time))
-    status_update("Working...                  \r")
+    console.print("Working...                  \r")
