@@ -17,6 +17,7 @@ import os
 import random
 import sys
 import textwrap
+from typing import NoReturn, Optional
 
 from configobj import ConfigObj
 import pkg_resources
@@ -25,7 +26,7 @@ from filewatcher.core import init_endings, init_phrases, settings
 from filewatcher.core.console import console
 
 
-def generate_config(updated_config=False):
+def generate_config(updated_config: bool = False) -> NoReturn:
     config = ConfigObj()
     config.filename = "config.ini"
 
@@ -112,7 +113,7 @@ def generate_config(updated_config=False):
     sys.exit()
 
 
-def load_config(loaded_config):
+def load_config(loaded_config: dict) -> Optional[NoReturn]:
     settings.app_name = loaded_config["Info"]["application_name"]
 
     settings.delay_time = int(loaded_config["Info"]["delay_time"])
@@ -152,7 +153,7 @@ def load_config(loaded_config):
             sys.exit()
 
 
-def initialize(settings=settings):
+def initialize(settings: dict = settings) -> bool | NoReturn:
 
     set_init_phrase = random.randrange(len(init_phrases))
 

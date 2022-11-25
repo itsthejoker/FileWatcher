@@ -1,9 +1,12 @@
 # FileWatcher
 When downloading movies, the organization is often what gets you. Thankfully, now you have a little helper!
 
-With FileWatcher, simply use the config file to point it at a downloads directory. In this case, we'll say C:\\--INCOMING-- or /home/itsthejoker/Downloads/ (FileWatcher is OS agnostic!). FileWatcher keeps an eye on all the folders and files in the downloads folder on a settable schedule, once every `x` seconds. If it identifies a folder containing a movie, it will attempt to see if it's in use, then try and rename the parent folder according to the schema of "Movie! (Year)" and move the folder to a settable movies directory. It can also be set to automatically delete any kind of file type found in a movie directory. FileWatcher 2.0 is built for Python 3.5, but any version of Python 3 should work.
+With FileWatcher, simply use the config file to point it at a downloads directory. In this case, we'll say C:\\--INCOMING-- or /home/itsthejoker/Downloads/ (FileWatcher is OS agnostic!). FileWatcher keeps an eye on all the folders and files in the downloads folder on a settable schedule, once every `x` seconds. If it identifies a folder containing a movie, it will attempt to see if it's in use, then try and rename the parent folder according to the schema of "Movie! (Year)" and move the folder to a settable movies directory. It can also be set to automatically delete any kind of file type found in a movie directory.
 
-The newly finished version 2.0.0 is incompatible with previous versions. If you're using a previous version of FileWatcher, you'll need to back up your config and make a new one -- FileWatcher tries to make this as painless as possible, but it's not automatic (yet)!
+FileWatcher 3.1 is built for Python 3.10 and uses modern language features as it is updated over time. If you are running an older version of Python and are enjoying FileWatcher, please consider updating your local version of Python. 
+
+Notes on moving from FileWatcher 1 to 2:
+- Version 2.0 is incompatible with previous versions. If you're using a previous version of FileWatcher, you'll need to back up your config and make a new one -- FileWatcher tries to make this as painless as possible, but it's not automatic (yet)!
 
 ## Usage
 * Save the program anywhere you like, then run it once. It will generate the config file that you'll have to edit.

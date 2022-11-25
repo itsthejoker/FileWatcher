@@ -21,8 +21,10 @@ from __future__ import print_function
 import os
 import shutil
 import time
+from typing import Optional
 
 from filewatcher.core import (
+    StatusTag,
     settings,
     get_files,
     get_folders,
@@ -50,7 +52,7 @@ def debug_message(message: str) -> None:
 settings.debug_message = debug_message
 
 
-def in_use(test_file):
+def in_use(test_file: str) -> bool:
     # yes, possible race condition, but due to the system we're putting this
     # into race conditions will not be an issue.
 
@@ -68,7 +70,7 @@ def in_use(test_file):
 settings.in_use = in_use
 
 
-def get_extension(filename: str):
+def get_extension(filename: str) -> Optional[str]:
     last_dot = filename.rfind(".")
     # if rfind fails, it returns -1
     if last_dot > 0:
@@ -80,7 +82,7 @@ def get_extension(filename: str):
 settings.get_extension = get_extension
 
 
-def move_folder(new_directory, dir_type="movie"):
+def move_folder(new_directory: str, dir_type="movie") -> None:
     if dir_type is "movie":
         settings_dir = settings.movie_dir
     elif dir_type is "audio":
@@ -116,7 +118,7 @@ def move_folder(new_directory, dir_type="movie"):
             rename_duplicate(new_directory)
 
 
-def rename_folder(directory):
+def rename_folder(directory: str) -> Optional[str]:
     settings.debug_message("Attempting rename of parent folder!")
 
     translated_folder = folder_translator(directory)
@@ -145,7 +147,7 @@ def rename_folder(directory):
         return new_directory
 
 
-def rename_and_move(directory):
+def rename_and_move(directory: str) -> None:
     new_folder = rename_folder(directory)
     if type(new_folder) is None:
         settings.debug_message(f"Encountered an issue with {directory}! Skipping!")
@@ -172,16 +174,16 @@ def root_level_files(files):
         #         process_root_level_audio(prospect_file)
 
 
-def check_for_skips(item):
-    if "[TV]" in item:
+def check_for_skips(item: str) -> bool:
+    if StatusTag.TV in item:
         settings.debug_message("Found previously scanned TV folder. Skipping!")
         return True
-    elif "[DUPLICATE]" in item:
+    elif StatusTag.DUPLICATE in item:
         settings.debug_message(
             "Found previously scanned duplicate directory. Skipping!"
         )
         return True
-    elif "[SKIP]" in item:
+    elif StatusTag.SKIP in item:
         settings.debug_message(
             "Found previously scanned skipped directory. Skipping again!"
         )

@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from filewatcher.core.console import console
 
@@ -28,7 +29,13 @@ init_endings = (
 )
 
 
-def get_root_directories():
+class StatusTag:
+    TV: str = "[TV]"
+    DUPLICATE: str = "[DUPLICATE]"
+    SKIP: str = "[SKIP]"
+
+
+def get_root_directories() -> list[Optional[str]]:
     return [
         x
         for x in os.listdir(settings.incoming_dir)
@@ -36,7 +43,7 @@ def get_root_directories():
     ]
 
 
-def get_root_files():
+def get_root_files() -> list[Optional[str]]:
     return [
         f
         for f in os.listdir(settings.incoming_dir)
@@ -44,7 +51,7 @@ def get_root_files():
     ]
 
 
-def get_files(directory):
+def get_files(directory: str) -> list[Optional[str]]:
     return [
         f
         for f in os.listdir(os.path.join(settings.incoming_dir, directory))
@@ -52,7 +59,7 @@ def get_files(directory):
     ]
 
 
-def get_folders(directory):
+def get_folders(directory: str) -> list[Optional[str]]:
     return [
         f
         for f in os.listdir(os.path.join(settings.incoming_dir, directory))
@@ -60,10 +67,10 @@ def get_folders(directory):
     ]
 
 
-class base_settings(object):
+class base_settings:
     def __init__(self):
         self._app_name = "FileWatcher"
-        self._version = 1.0
+        self._version = 3.1
         self._delay_time = "180"
         self._debug = False
 

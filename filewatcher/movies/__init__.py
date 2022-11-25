@@ -7,7 +7,7 @@ import requests
 from addict import Dict
 
 
-class OMDbAPI(object):
+class OMDbAPI:
     """
     Class that handles basic retrieval of information from the Open Movie
     Database API via Requests.
@@ -21,7 +21,9 @@ class OMDbAPI(object):
         self.plot = "plot"
         self.request_type = "r"
 
-    def get_movie(self, movie_title, movie_year=None, full_plot=False):
+    def get_movie(
+        self, movie_title: str, movie_year: int = None, full_plot: bool = False
+    ) -> dict[str, str | int]:
 
         payload = {
             self.title: movie_title,
@@ -38,7 +40,7 @@ class OMDbAPI(object):
 
         return response_dict
 
-    def _convert_keys(self, incoming_dict):
+    def _convert_keys(self, incoming_dict: dict) -> dict:
         correction_dict = {
             "Plot": "plot",
             "Released": "released",

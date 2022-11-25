@@ -17,10 +17,10 @@
 
 from __future__ import print_function
 
-from core import settings
+from filewatcher.core import settings
 
 
-def is_audio_folder(directory, dir_files):
+def is_audio_folder(directory: str, dir_files: list[str]) -> bool:
     for directory_file in dir_files:
         settings.debug_message(
             "Testing file {} for audio format!".format(directory_file)
@@ -35,7 +35,7 @@ def is_audio_folder(directory, dir_files):
             return False
 
 
-def process_audio(directory):
+def process_audio(directory: str) -> None:
     #  placeholder. Right now there's nothing to process because we just move
     #  stuff.
     pass

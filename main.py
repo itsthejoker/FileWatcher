@@ -16,6 +16,7 @@
 *********************************************
 '''
 import sys
+from typing import NoReturn
 
 from filewatcher.core.initialize import initialize
 from filewatcher.core.filewatcher import main_loop
@@ -23,7 +24,8 @@ from filewatcher.core.console import console
 
 console.rule("[white]FileWatcher")
 
-if __name__ == "__main__":
+
+def main() -> NoReturn:
     initialize()
     while True:
         try:
@@ -32,3 +34,7 @@ if __name__ == "__main__":
             console.print()
             console.rule("[bold red]Exiting!")
             sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
