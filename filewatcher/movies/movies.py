@@ -1,6 +1,6 @@
 #!/usr/local/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 *********************************************
  File Name: movies.py
  Author: Joe Kaufeld
@@ -12,7 +12,7 @@
    Special thanks to https://github.com/sposterkil for the regex and code
    review!
 *********************************************
-'''
+"""
 
 from __future__ import print_function
 
@@ -24,34 +24,32 @@ from filewatcher.core import settings
 from filewatcher.movies import OMDbAPI
 
 
-title_parser = re.compile("""
+title_parser = re.compile(
+    """
     (?P<title>[\w,.\-!'\s]+)
     \s(?:[\(\[]?
     (?P<year>(?:(?:20)|(?:19))
     \d{2})[\)\]]?)
-    """, re.MULTILINE | re.VERBOSE)
+    """,
+    re.MULTILINE | re.VERBOSE,
+)
 
 
 def rename_skipped(directory):
 
     os.rename(
-        os.path.join(
-            settings.incoming_dir, directory
-        ), os.path.join(
-            settings.incoming_dir, ("[SKIP] " + directory)
-        )
+        os.path.join(settings.incoming_dir, directory),
+        os.path.join(settings.incoming_dir, ("[SKIP] " + directory)),
     )
 
 
 def folder_translator(foldername, title_parser=title_parser):
-    '''Uses regex to yoink the name and year out of movie titles.'''
-    settings.debug_message(
-        "Running folder/name translation on {}".format(foldername)
-    )
+    """Uses regex to yoink the name and year out of movie titles."""
+    settings.debug_message("Running folder/name translation on {}".format(foldername))
     # check to see if we're operating on a file or a folder
     if settings.get_extension(foldername) in settings.video_formats:
         extension = settings.get_extension(foldername)
-        foldername = foldername[:-len(extension)].replace(".", " ")
+        foldername = foldername[: -len(extension)].replace(".", " ")
         foldername_less_extension = foldername.replace("_", " ")
         foldername = foldername_less_extension + extension
     else:
@@ -79,9 +77,7 @@ def folder_translator(foldername, title_parser=title_parser):
             title = foldername
 
         settings.debug_message("Attempting lookup through OMDb!")
-        settings.debug_message(
-            "OMDb - Searching for year of {}".format(title)
-        )
+        settings.debug_message("OMDb - Searching for year of {}".format(title))
 
         try:
             omdb = OMDbAPI()
@@ -97,25 +93,19 @@ def folder_translator(foldername, title_parser=title_parser):
                     unknown_movie.title, unknown_movie.year
                 )
             )
-            return([unknown_movie.title, unknown_movie.year])
+            return [unknown_movie.title, unknown_movie.year]
         except (AttributeError, IndexError):
             # it can't find a title or year! Oh no! Give up for now.
             return None
 
-    return (
-        title_data.group("title"),
-        title_data.group("year")
-    )
+    return (title_data.group("title"), title_data.group("year"))
 
 
 def rename_duplicate(directory):
 
     os.rename(
-        os.path.join(
-            settings.incoming_dir, directory
-        ), os.path.join(
-            settings.incoming_dir, ("[DUPLICATE] " + directory)
-        )
+        os.path.join(settings.incoming_dir, directory),
+        os.path.join(settings.incoming_dir, ("[DUPLICATE] " + directory)),
     )
 
 
@@ -123,18 +113,12 @@ def process_root_level_movie(movie):
 
     translated_folder = folder_translator(movie)
     if translated_folder is not None:
-        renamed_movie = "{} ({})".format(
-            translated_folder[0], translated_folder[1]
-        )
+        renamed_movie = "{} ({})".format(translated_folder[0], translated_folder[1])
     else:
         rename_skipped(movie)
         return
 
-    settings.debug_message(
-        "Moving root level file {} into new folder!".format(
-            movie
-        )
-    )
+    settings.debug_message("Moving root level file {} into new folder!".format(movie))
 
     if not os.path.isdir(os.path.join(settings.movie_dir, renamed_movie)):
 
@@ -144,70 +128,50 @@ def process_root_level_movie(movie):
                 if banned_ch in renamed_movie:
                     renamed_movie = renamed_movie.replace(banned_ch, "")
 
-            settings.debug_message("Creating folder for root level file {}"
-                                   .format(movie))
-            os.mkdir(
-                os.path.join(
-                    settings.incoming_dir, renamed_movie
-                )
+            settings.debug_message(
+                "Creating folder for root level file {}".format(movie)
             )
+            os.mkdir(os.path.join(settings.incoming_dir, renamed_movie))
             shutil.move(
-                os.path.join(
-                    settings.incoming_dir, movie
-                ), os.path.join(
-                    settings.incoming_dir, renamed_movie, movie
-                )
+                os.path.join(settings.incoming_dir, movie),
+                os.path.join(settings.incoming_dir, renamed_movie, movie),
             )
 
             settings.debug_message("Moving folder to movies folder!")
             shutil.move(
-                os.path.join(
-                    settings.incoming_dir, renamed_movie
-                ), os.path.join(
-                    settings.movie_dir, renamed_movie
-                )
+                os.path.join(settings.incoming_dir, renamed_movie),
+                os.path.join(settings.movie_dir, renamed_movie),
             )
             settings.debug_message("Move successful!")
         except (OSError, shutil.Error):
 
-            print("{} is already in the destination directory! Renaming!".
-                  format(renamed_movie))
+            print(
+                "{} is already in the destination directory! Renaming!".format(
+                    renamed_movie
+                )
+            )
             rename_duplicate(renamed_movie)
     else:
 
-        if not os.path.isfile(
-            os.path.join(
-                settings.movie_dir, renamed_movie, movie
-            )
-        ):
+        if not os.path.isfile(os.path.join(settings.movie_dir, renamed_movie, movie)):
             try:
                 shutil.move(
-                    os.path.join(
-                        settings.incoming_dir, movie
-                    ), os.path.join(
-                        settings.movie_dir, renamed_movie, movie))
+                    os.path.join(settings.incoming_dir, movie),
+                    os.path.join(settings.movie_dir, renamed_movie, movie),
+                )
             except shutil.Error:
-                print("Something went wrong with moving {}! Skipping!".format(
-                      movie))
+                print("Something went wrong with moving {}! Skipping!".format(movie))
         else:
-            print("{} is already in the destination directory! Renaming!".
-                  format(renamed_movie))
-            if not os.path.isdir(
-                os.path.join(
-                    settings.incoming_dir, renamed_movie
+            print(
+                "{} is already in the destination directory! Renaming!".format(
+                    renamed_movie
                 )
-            ):
-                os.mkdir(
-                    os.path.join(
-                        settings.incoming_dir, renamed_movie
-                    )
-                )
+            )
+            if not os.path.isdir(os.path.join(settings.incoming_dir, renamed_movie)):
+                os.mkdir(os.path.join(settings.incoming_dir, renamed_movie))
                 shutil.move(
-                    os.path.join(
-                        settings.incoming_dir, movie
-                    ), os.path.join(
-                        settings.incoming_dir, renamed_movie, movie
-                    )
+                    os.path.join(settings.incoming_dir, movie),
+                    os.path.join(settings.incoming_dir, renamed_movie, movie),
                 )
                 rename_duplicate(renamed_movie)
 
@@ -215,13 +179,15 @@ def process_root_level_movie(movie):
 def is_video_folder(directory, dir_files):
     for directory_file in dir_files:
         settings.debug_message(
-            "Testing file {} for video format!".format(directory_file))
+            "Testing file {} for video format!".format(directory_file)
+        )
         if settings.get_extension(directory_file) in settings.video_formats:
             settings.debug_message("Found video folder: {}".format(directory))
             return True
 
-    settings.debug_message("Folder does not contain first level video files."
-                           " Skipping.")
+    settings.debug_message(
+        "Folder does not contain first level video files." " Skipping."
+    )
     return False
 
 
@@ -232,14 +198,11 @@ def is_tv_show(directory, directory_file):
     if (
         int(
             os.path.getsize(
-                os.path.join(
-                    settings.incoming_dir, directory, directory_file
-                )
+                os.path.join(settings.incoming_dir, directory, directory_file)
             )
-        ) / 1000000
-    ) < int(
-        settings.min_movie_size
-    ):
+        )
+        / 1000000
+    ) < int(settings.min_movie_size):
         # check to see if it's a "sample" video. I hate those.
         if is_sample(directory, directory_file):
 
@@ -254,14 +217,11 @@ def is_sample(directory, directory_file):
     if (
         int(
             os.path.getsize(
-                os.path.join(
-                    settings.incoming_dir, directory, directory_file
-                )
+                os.path.join(settings.incoming_dir, directory, directory_file)
             )
-        ) / 1000000
-    ) < int(
-        settings.min_episode_size
-    ):
+        )
+        / 1000000
+    ) < int(settings.min_episode_size):
         return True
     else:
         return False
@@ -274,40 +234,29 @@ def delete_samples(directory, dir_files):
         if settings.get_extension(thing_to_delete) in settings.video_formats:
             if is_sample(directory, thing_to_delete):
                 settings.debug_message(
-                    "Found sample movie {}! ENGAGING LASERS".format(
-                        thing_to_delete
-                    )
+                    "Found sample movie {}! ENGAGING LASERS".format(thing_to_delete)
                 )
                 os.remove(
-                    os.path.join(
-                        settings.incoming_dir, directory, thing_to_delete
-                    )
+                    os.path.join(settings.incoming_dir, directory, thing_to_delete)
                 )
         if settings.get_extension(thing_to_delete) in settings.exts_to_delete:
             settings.debug_message("NUKING {}".format(thing_to_delete))
-            os.remove(
-                os.path.join(
-                    settings.incoming_dir, directory, thing_to_delete
-                )
-            )
+            os.remove(os.path.join(settings.incoming_dir, directory, thing_to_delete))
 
 
 def process_tv_show(directory):
     # for now, we're just renaming the folder so we can come back and get it
     # manually. TV shows are hard, so we'll take a look at that later.
     os.rename(
-        os.path.join(
-            settings.incoming_dir, directory
-        ), os.path.join(
-            settings.incoming_dir, ("[TV] " + directory)
-        )
+        os.path.join(settings.incoming_dir, directory),
+        os.path.join(settings.incoming_dir, ("[TV] " + directory)),
     )
 
 
 def is_movie(directory_file):
     # return true if file is a file type we're looking for
 
-    return (settings.get_extension(directory_file) in settings.video_formats)
+    return settings.get_extension(directory_file) in settings.video_formats
 
 
 def process_movie(directory, dir_files, rename_and_move):

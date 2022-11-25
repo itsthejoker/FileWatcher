@@ -4,101 +4,78 @@ from filewatcher.core.console import console
 
 #  useless, but fun!
 init_phrases = (
-    'Reticulating splines',
-    'Murdering zombies',
-    'Initializing',
-    'Bringing MAXIS back',
-    'Engaging warp drive',
-    'Telling future',
-    'Preparing fart',
-    'Building pyramids',
-    'Making \'fetch\' happen'
+    "Reticulating splines",
+    "Murdering zombies",
+    "Initializing",
+    "Bringing MAXIS back",
+    "Engaging warp drive",
+    "Telling future",
+    "Preparing fart",
+    "Building pyramids",
+    "Making 'fetch' happen",
 )
 
 init_endings = (
-    'Splines reticulated!',
-    'Zombies murdered!',
-    'Initialized!',
+    "Splines reticulated!",
+    "Zombies murdered!",
+    "Initialized!",
     "I tried :'(",
-    'Warp drive engaged!',
-    'Future told! ...I think.',
-    '...Heh.',
-    'Pyramids built!',
-    'That is /so/ fetch.'
+    "Warp drive engaged!",
+    "Future told! ...I think.",
+    "...Heh.",
+    "Pyramids built!",
+    "That is /so/ fetch.",
 )
 
 
 def get_root_directories():
     return [
-        x for x in os.listdir(
-            settings.incoming_dir
-        ) if os.path.isdir(
-            os.path.join(
-                settings.incoming_dir, x
-            )
-        )
+        x
+        for x in os.listdir(settings.incoming_dir)
+        if os.path.isdir(os.path.join(settings.incoming_dir, x))
     ]
 
 
 def get_root_files():
     return [
-        f for f in os.listdir(
-            settings.incoming_dir
-        ) if os.path.isfile(
-            os.path.join(
-                settings.incoming_dir, f
-            )
-        )
+        f
+        for f in os.listdir(settings.incoming_dir)
+        if os.path.isfile(os.path.join(settings.incoming_dir, f))
     ]
 
 
 def get_files(directory):
     return [
-        f for f in os.listdir(
-            os.path.join(
-                settings.incoming_dir, directory
-            )
-        ) if os.path.isfile(
-            os.path.join(
-                settings.incoming_dir, directory, f
-            )
-        )
+        f
+        for f in os.listdir(os.path.join(settings.incoming_dir, directory))
+        if os.path.isfile(os.path.join(settings.incoming_dir, directory, f))
     ]
 
 
 def get_folders(directory):
     return [
-        f for f in os.listdir(
-            os.path.join(
-                settings.incoming_dir, directory
-            )
-        ) if os.path.isdir(
-            os.path.join(
-                settings.incoming_dir, directory, f
-            )
-        )
+        f
+        for f in os.listdir(os.path.join(settings.incoming_dir, directory))
+        if os.path.isdir(os.path.join(settings.incoming_dir, directory, f))
     ]
 
 
 class base_settings(object):
-
     def __init__(self):
-        self._app_name = 'FileWatcher'
+        self._app_name = "FileWatcher"
         self._version = 1.0
-        self._delay_time = '180'
+        self._delay_time = "180"
         self._debug = False
 
-        self._incoming_dir = 'C:\--INCOMING--'
-        self._movie_dir = 'C:\Movies'
-        self._audio_dir = 'C:\Audio'
+        self._incoming_dir = "C:\--INCOMING--"
+        self._movie_dir = "C:\Movies"
+        self._audio_dir = "C:\Audio"
 
-        self._min_movie_size = '650'
-        self._min_episode_size = '25'
-        self._exts_to_delete = '.nfo, .txt, .jpg'
-        self._video_formats = '.avi, .mkv, .mp4'
-        self._audio_formats = (
-            '.mp3, .ogg, .flac, .aac, .wav, .m4a, .alac, .aiff'
-        )
+        self._min_movie_size = "650"
+        self._min_episode_size = "25"
+        self._exts_to_delete = ".nfo, .txt, .jpg"
+        self._video_formats = ".avi, .mkv, .mp4"
+        self._audio_formats = ".mp3, .ogg, .flac, .aac, .wav, .m4a, .alac, .aiff"
 
     @property
     def app_name(self):
@@ -210,5 +187,6 @@ class base_settings(object):
     @property
     def filenames_to_ignore(self):
         return ("Thumbs.db", ".DS_Store")
+
 
 settings = base_settings()

@@ -1,6 +1,6 @@
 #!/usr/local/bin/python
 # -*- coding: utf-8 -*-
-'''
+"""
 *********************************************
  File Name: filewatcher.py
  Author: Joe Kaufeld
@@ -14,17 +14,20 @@
    Special thanks to https://github.com/sposterkil for the regex and code
    review!
 *********************************************
-'''
+"""
 
 from __future__ import print_function
 
 import os
 import shutil
-import sys
 import time
 
 from filewatcher.core import (
-    settings, get_files, get_folders, get_root_files, get_root_directories
+    settings,
+    get_files,
+    get_folders,
+    get_root_files,
+    get_root_directories,
 )
 from filewatcher.movies.movies import (
     is_video_folder,
@@ -32,15 +35,14 @@ from filewatcher.movies.movies import (
     rename_duplicate,
     rename_skipped,
     folder_translator,
-    process_root_level_movie
+    process_root_level_movie,
 )
 from filewatcher.core.console import console
-
 
 # from audio.music import is_audio_folder
 
 
-def debug_message(message):
+def debug_message(message: str) -> None:
     if settings.debug:
         console.log(message)
 
@@ -53,9 +55,7 @@ def in_use(test_file):
     # into race conditions will not be an issue.
 
     try:
-        settings.debug_message(
-            "Testing to see if {} is in use".format(test_file)
-        )
+        settings.debug_message("Testing to see if {} is in use".format(test_file))
         os.rename(test_file, test_file + "_")
         os.rename(test_file + "_", test_file)
         settings.debug_message("Not in use! Proceed!")
@@ -68,8 +68,8 @@ def in_use(test_file):
 settings.in_use = in_use
 
 
-def get_extension(filename):
-    last_dot = filename.rfind('.')
+def get_extension(filename: str):
+    last_dot = filename.rfind(".")
     # if rfind fails, it returns -1
     if last_dot > 0:
         return filename[last_dot:]
@@ -80,34 +80,31 @@ def get_extension(filename):
 settings.get_extension = get_extension
 
 
-def move_folder(new_directory, dir_type='movie'):
-    if dir_type is 'movie':
+def move_folder(new_directory, dir_type="movie"):
+    if dir_type is "movie":
         settings_dir = settings.movie_dir
-    elif dir_type is 'audio':
+    elif dir_type is "audio":
         settings_dir = settings.audio_dir
+    else:
+        raise Exception(f"Cannot continue; unknown dir type {dir_type}!")
 
     if new_directory is None:
         settings.debug_message("Something went wrong! Skipping!")
     else:
-
         if not os.path.isdir(os.path.join(settings_dir, new_directory)):
-
             try:
                 shutil.move(
-                    os.path.join(
-                        settings.incoming_dir, new_directory
-                    ),
-                    os.path.join(settings_dir, new_directory)
+                    os.path.join(settings.incoming_dir, new_directory),
+                    os.path.join(settings_dir, new_directory),
                 )
                 settings.debug_message(
                     "Move successful! Folder {} now located at {}".format(
-                        new_directory, settings_dir + '\\' + new_directory
+                        new_directory, os.path.join(settings_dir, new_directory)
                     )
                 )
             except (OSError, shutil.Error):
                 print(
-                    "{} is already in the destination directory! Renaming!"
-                    "".format(new_directory)
+                    f"{new_directory} is already in the destination directory! Renaming!"
                 )
                 rename_duplicate(new_directory)
         else:
@@ -136,7 +133,7 @@ def rename_folder(directory):
         try:
             os.rename(
                 os.path.join(settings.incoming_dir, directory),
-                os.path.join(settings.incoming_dir, new_directory)
+                os.path.join(settings.incoming_dir, new_directory),
             )
             settings.debug_message("Rename successful!")
         except OSError:
@@ -165,7 +162,7 @@ def root_level_files(files):
         if not check_for_skips(prospect_file):
             if get_extension(prospect_file) in settings.video_formats:
                 if not settings.in_use(
-                        os.path.join(settings.incoming_dir, prospect_file)
+                    os.path.join(settings.incoming_dir, prospect_file)
                 ):
                     process_root_level_movie(prospect_file)
 
@@ -202,9 +199,9 @@ def process_folders(dirs):
             dir_files = get_files(directory)
 
             try:
-                if not in_use(os.path.join(
-                        settings.incoming_dir, directory, dir_files[0]
-                )):
+                if not in_use(
+                    os.path.join(settings.incoming_dir, directory, dir_files[0])
+                ):
                     settings.debug_message(
                         "Folder is good to go - time to see if it's a video folder!"
                     )
@@ -238,9 +235,7 @@ def process_folders(dirs):
                     rename_skipped(directory)
 
             else:
-                settings.debug_message(
-                    "Can't use folder! Moving to next folder."
-                )
+                settings.debug_message("Can't use folder! Moving to next folder.")
 
 
 def main_loop():
@@ -259,9 +254,7 @@ def main_loop():
     if files is not []:
         root_level_files(files)
 
-    settings.debug_message(
-        "Sleeping for {} seconds!".format(settings.delay_time)
-    )
+    settings.debug_message("Sleeping for {} seconds!".format(settings.delay_time))
 
     console.print(f"Sleeping for {settings.delay_time} seconds!\r")
     time.sleep(int(settings.delay_time))
