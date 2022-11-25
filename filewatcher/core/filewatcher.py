@@ -4,7 +4,7 @@
 *********************************************
  File Name: filewatcher.py
  Author: Joe Kaufeld
- Email: joe.kaufeld@gmail.com
+ Email: opensource@joekaufeld.com
  Purpose:
    Continuously scans a directory where new files are added automatically, make
    sure they're not currently in use, then try to identify them based on file

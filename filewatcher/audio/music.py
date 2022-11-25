@@ -4,7 +4,7 @@
 *********************************************
  File Name: main.py
  Author: Joe Kaufeld
- Email: joe.kaufeld@gmail.com
+ Email: opensource@joekaufeld.com
  Purpose:
    Handles identification of music folders and tries to get them to the right
    place. Known issues: cannot handle discographies or multiple albums under

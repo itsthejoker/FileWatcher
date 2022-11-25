@@ -2,7 +2,7 @@
 name = "filewatcher"
 version = "3.1.0"
 description = ""
-authors = ["Joe Kaufeld <joe.kaufeld@gmail.com>"]
+authors = ["Joe Kaufeld <opensource@joekaufeld.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"

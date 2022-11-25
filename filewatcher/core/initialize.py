@@ -4,7 +4,7 @@
 *********************************************
  File Name: initialize.py
  Author: Joe Kaufeld
- Email: joe.kaufeld@gmail.com
+ Email: opensource@joekaufeld.com
  Purpose:
    Loads in the config file or generates it if necessary.
  Credits:

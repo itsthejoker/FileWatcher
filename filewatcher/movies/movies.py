@@ -4,7 +4,7 @@
 *********************************************
  File Name: movies.py
  Author: Joe Kaufeld
- Email: joe.kaufeld@gmail.com
+ Email: opensource@joekaufeld.com
  Purpose:
    Handles pretty much all the recognizing, renaming, and moving of movie
    files and folders.
@@ -194,7 +194,6 @@ def is_video_folder(directory, dir_files):
 def is_tv_show(directory, directory_file):
     # we don't have to check the extension here because is_movie() did that
     # for us
-
     if (
         int(
             os.path.getsize(
