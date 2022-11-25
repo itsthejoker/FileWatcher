@@ -107,7 +107,7 @@ def rename_duplicate(directory: str) -> None:
 
     os.rename(
         os.path.join(settings.incoming_dir, directory),
-        os.path.join(settings.incoming_dir, ("[DUPLICATE] " + directory)),
+        os.path.join(settings.incoming_dir, (f"{StatusTag.DUPLICATE} " + directory)),
     )
 
 
