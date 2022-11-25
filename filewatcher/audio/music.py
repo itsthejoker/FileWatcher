@@ -30,7 +30,7 @@ def is_audio_folder(directory: str, dir_files: list[str]) -> bool:
             return True
         else:
             settings.debug_message(
-                "Folder does not contain first level audio " "files. Skipping."
+                "Folder does not contain first level audio files. Skipping."
             )
             return False
 

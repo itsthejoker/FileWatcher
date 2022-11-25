@@ -188,7 +188,7 @@ def is_video_folder(directory: str, dir_files: list[Optional[str]]) -> bool:
             return True
 
     settings.debug_message(
-        "Folder does not contain first level video files." " Skipping."
+       "Folder does not contain first level video files. Skipping."
     )
     return False
 

@@ -37,7 +37,7 @@ def generate_config(updated_config: bool = False) -> NoReturn:
     config["Info"]["application_name"] = settings.app_name
     config["Info"].comments.update(
         {
-            "Info": ["# Delay between filesystem checks - default is 180 " "seconds."],
+            "Info": ["# Delay between filesystem checks - default is 180 seconds."],
             "key": ["delay_time"],
         }
     )

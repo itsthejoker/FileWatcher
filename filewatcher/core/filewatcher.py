@@ -83,9 +83,9 @@ settings.get_extension = get_extension
 
 
 def move_folder(new_directory: str, dir_type="movie") -> None:
-    if dir_type is "movie":
+    if dir_type == "movie":
         settings_dir = settings.movie_dir
-    elif dir_type is "audio":
+    elif dir_type == "audio":
         settings_dir = settings.audio_dir
     else:
         raise Exception(f"Cannot continue; unknown dir type {dir_type}!")
