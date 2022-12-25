@@ -60,7 +60,6 @@ def folder_translator(
 
     foldername = foldername.title()
 
-    settings.debug_message("Now {} after replacement!".format(foldername))
     title_data = title_parser.match(foldername)
 
     try:
