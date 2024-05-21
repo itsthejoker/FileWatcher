@@ -9,7 +9,7 @@ python = "^3.8"
 rich = "^9.4.0"
 pytest = "^6.2.0"
 configobj = "^5.0.6"
-requests = "^2.31.0"
+requests = "^2.32.0"
 addict = "^2.4.0"
 
 [tool.poetry.dev-dependencies]
