@@ -8,7 +8,7 @@ authors = ["Joe Kaufeld <opensource@joekaufeld.com>"]
 python = "^3.8"
 rich = "^9.4.0"
 pytest = "^6.2.0"
-configobj = "^5.0.6"
+configobj = "^5.0.9"
 requests = "^2.32.0"
 addict = "^2.4.0"
 
